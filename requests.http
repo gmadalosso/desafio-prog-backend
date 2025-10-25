@@ -1,0 +1,5 @@
+### Teste da API
+GET http://localhost:5001/
+
+### Teste do endpoint /api/ping
+GET http://localhost:5001/api/ping
