@@ -1,8 +1,8 @@
 import app from "./app.js";
 import dotenv from "dotenv";
 import pool from "./config/database.js";
-import bcrypt from "bcrypt";
 import fs from "fs/promises";
+import { mockUsuarios } from "./data/mockUsuarios.js";
 
 dotenv.config();
 
@@ -14,25 +14,30 @@ try {
 
   // Lendo e executando o init.sql
   const sql = await fs.readFile("init.sql", "utf8");
-  await connection.query(sql);
+  // Divide por ponto e vírgula e remove comentários
+  const statements = sql
+    .split(';')
+    .map(stmt => stmt.trim())
+    .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
+
+  for (const statement of statements) {
+    if (statement) {
+      await connection.query(statement);
+    }
+  }
   console.log("Tabelas criadas com sucesso");
 
   // Inserção de usuários mockados
-  const mockUsuarios = [
-    { username: "professor1", password: await bcrypt.hash("senha123", 10), role: "professor" },
-    { username: "aluno1", password: await bcrypt.hash("senha123", 10), role: "aluno" },
-  ];
-
   for (const usuario of mockUsuarios) {
     await connection.query(
-      "INSERT IGNORE INTO usuarios (username, password_hash, role) VALUES (?, ?, ?)",
-      [usuario.username, usuario.password, usuario.role]
+      "INSERT IGNORE INTO usuarios (nomeUsuario, senha_hash, papel) VALUES (?, ?, ?)",
+      [usuario.nomeUsuario, usuario.senha, usuario.papel]
     );
   }
 
-  console.log("Usuários mockados inseridos");
+  console.log("Usuários mockados inseridos com sucesso");
 
-  connection.release(); // Libera a conexão após todas as operações
+  connection.release();
 } catch (error) {
   console.error("Erro ao conectar ao MySQL:", error);
 }
