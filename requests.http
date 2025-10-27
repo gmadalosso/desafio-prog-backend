@@ -1,5 +1,38 @@
 ### Teste da API
 GET http://localhost:5001/
 
-### Teste do endpoint /api/ping
-GET http://localhost:5001/api/ping
+### ============================================
+### TESTES DE AUTENTICAÇÃO
+### ============================================
+
+### Login como Professor
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+  "nomeUsuario": "professor1",
+  "senha": "senha123"
+}
+
+### Login como Aluno
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+  "nomeUsuario": "aluno1",
+  "senha": "senha123"
+}
+
+### Login com credenciais inválidas
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+  "nomeUsuario": "usuario_inexistente",
+  "senha": "senha_errada"
+}
+
+### Logout (requer token válido)
+POST http://localhost:5001/api/auth/logout
+Content-Type: application/json
+Authorization: Bearer [INSERIR TOKEN AQUI (sem as aspas)]
