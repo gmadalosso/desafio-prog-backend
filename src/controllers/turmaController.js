@@ -25,6 +25,11 @@ export async function criarTurma(req, res) {
     });
     res.status(201).json(turma);
   } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({ 
+        erro: "Já existe uma turma para esta disciplina neste horário" 
+      });
+    }
     res.status(500).json({ erro: error.message });
   }
 }

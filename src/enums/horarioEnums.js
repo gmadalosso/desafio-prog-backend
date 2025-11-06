@@ -18,4 +18,4 @@ export const HORARIOS_VALIDOS = [
     "41", "42", "43", // Quarta - Manha, tarde e noite
     "51", "52", "53", // Quinta - Manha, tarde e noite
     "61", "62", "63" // Sexta - Manha, tarde e noite
-]
+];
