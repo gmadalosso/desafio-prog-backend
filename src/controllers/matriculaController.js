@@ -25,6 +25,24 @@ export async function matricular(req, res) {
     
         res.status(201).json({ mensagem: "Matrícula realizada com sucesso"});
     } catch (error) {
-        res.status(500).json({ erro: error.message });
+        // Tratamento erro de matrícula duplicada
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ 
+                erro: "Aluno já está matriculado nesta turma" 
+            });
+        }
+
+        // Tratamento erro de turma não existe
+        if (error.code === 'ER_NO_REFERENCED_ROW_2' || error.code === 'ER_NO_REFERENCED_ROW') {
+            return res.status(404).json({ 
+                erro: "Turma não encontrada" 
+            });
+        }
+
+        // Outros erros do banco de dados
+        res.status(500).json({ 
+            erro: "Erro ao processar matrícula",
+            detalhes: error.message 
+        });
     }
 }
