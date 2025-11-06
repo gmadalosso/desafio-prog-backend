@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import pool from "./config/database.js";
 import fs from "fs/promises";
 import { mockUsuarios } from "./data/mockUsuarios.js";
+import { mockDisciplinas } from "./data/mockDisciplinas.js";
 
 dotenv.config();
 
@@ -36,6 +37,28 @@ try {
   }
 
   console.log("Usuários mockados inseridos com sucesso");
+
+  // Inserção de disciplinas mockadas
+  // Buscar os IDs dos professores para associar às disciplinas
+  const [professores] = await connection.query(
+    "SELECT id, nomeUsuario FROM usuarios WHERE papel = 1 ORDER BY id"
+  );
+  
+  for (const disciplina of mockDisciplinas) {
+    const professorIndex = disciplina.professor_id - 1;
+    const professor = professores[professorIndex];
+    
+    if (professor) {
+      await connection.query(
+        "INSERT IGNORE INTO disciplinas (nome, codigo, professor_id) VALUES (?, ?, ?)",
+        [disciplina.nome, disciplina.codigo, professor.id]
+      );
+    } else {
+      console.warn(`Professor com ID ${disciplina.professor_id} não encontrado para disciplina ${disciplina.nome}`);
+    }
+  }
+
+  console.log("Disciplinas mockadas inseridas com sucesso");
 
   connection.release();
 } catch (error) {
