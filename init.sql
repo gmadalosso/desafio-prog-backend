@@ -15,10 +15,13 @@ CREATE TABLE IF NOT EXISTS disciplinas (
 
 CREATE TABLE IF NOT EXISTS turmas (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  disciplina_id INT,
-  horario VARCHAR(50),
-  vagas_disponiveis INT DEFAULT 30,
-  FOREIGN KEY (disciplina_id) REFERENCES disciplinas(id)
+  disciplina_id INT NOT NULL,
+  professor_id INT NOT NULL,
+  horario CHAR(2) NOT NULL, 
+  vagas_disponiveis INT DEFAULT 30 CHECK (vagas_disponiveis >= 0),
+  FOREIGN KEY (disciplina_id) REFERENCES disciplinas(id) ON DELETE CASCADE,
+  FOREIGN KEY (professor_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  UNIQUE (disciplina_id, horario)
 );
 
 CREATE TABLE IF NOT EXISTS matriculas (

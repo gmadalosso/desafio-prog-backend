@@ -36,3 +36,27 @@ Content-Type: application/json
 POST http://localhost:5001/api/auth/logout
 Content-Type: application/json
 Authorization: Bearer [INSERIR TOKEN AQUI (sem as aspas)]
+
+
+### Criar Turma (Professor)
+POST http://localhost:5001/api/turmas
+Authorization: Bearer [TOKEN_PROFESSOR]
+Content-Type: application/json
+
+{
+  "disciplina_id": 1,
+  "horario": "21"
+}
+
+### Listar Turmas
+GET http://localhost:5001/api/turmas
+Authorization: Bearer [TOKEN_ALUNO_OU_PROFESSOR]
+
+### Matricular em Turma (Aluno)
+POST http://localhost:5001/api/matriculas
+Authorization: Bearer [TOKEN_ALUNO]
+Content-Type: application/json
+
+{
+  "turma_id": 1
+}
