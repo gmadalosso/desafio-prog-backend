@@ -30,5 +30,6 @@ CREATE TABLE IF NOT EXISTS matriculas (
   turma_id INT,
   status INT DEFAULT 0,
   FOREIGN KEY (aluno_id) REFERENCES usuarios(id),
-  FOREIGN KEY (turma_id) REFERENCES turmas(id)
+  FOREIGN KEY (turma_id) REFERENCES turmas(id),
+  UNIQUE (aluno_id, turma_id)
 );
