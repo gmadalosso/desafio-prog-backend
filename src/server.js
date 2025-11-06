@@ -9,23 +9,34 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5001;
 
-try {
-  const connection = await pool.getConnection();
-  console.log("Conexão com o MySQL concluída com sucesso!");
-
-  // Lendo e executando o init.sql
-  const sql = await fs.readFile("init.sql", "utf8");
-  // Divide por ponto e vírgula e remove comentários
-  const statements = sql
+async function executarArquivoSQL(filePath, connection) {
+  const sql = await fs.readFile(filePath, "utf8");
+  const comandos = sql
     .split(';')
     .map(stmt => stmt.trim())
     .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
 
-  for (const statement of statements) {
-    if (statement) {
-      await connection.query(statement);
+  await connection.query('SET FOREIGN_KEY_CHECKS = 0');
+  
+  for (const c of comandos) {
+    if (c.toUpperCase().includes('SET FOREIGN_KEY_CHECKS')) {
+      continue;
     }
+    await connection.query(c);
   }
+  await connection.query('SET FOREIGN_KEY_CHECKS = 1');
+}
+
+try {
+  const connection = await pool.getConnection();
+  console.log("Conexão com o MySQL concluída com sucesso!");
+
+  // Limpando tabelas antes de criar
+  await executarArquivoSQL("limpar_banco.sql", connection);
+  console.log("Tabelas limpas com sucesso");
+
+  // Lendo e executando o init.sql
+  await executarArquivoSQL("init.sql", connection);
   console.log("Tabelas criadas com sucesso");
 
   // Inserção de usuários mockados

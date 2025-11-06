@@ -1,8 +1,6 @@
 -- Script para limpar todas as tabelas e resetar AUTO_INCREMENT
 -- Executar este script no MySQL antes de reiniciar o servidor
 
-USE sistema_matriculas;
-
 SET FOREIGN_KEY_CHECKS = 0;
 
 TRUNCATE TABLE matriculas;
